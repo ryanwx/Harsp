@@ -1,55 +1,46 @@
-package rsp
+package harsp
 
 import (
-    "encoding/json"
-    "net/http"
+	"encoding/json"
+	"net/http"
 )
 
-type JsonRsp struct {
-    rsp
+type JSON struct {
+	Rc RetCode
+
+	Data interface{}
 }
 
-// send data to http response.
-// it returns the writer, then you can use the writer continue to write.
-// @param: w http.ResponseWriter, all the data will use the writer write into the response
-// @param: data interface, this is the response content
-// @return： w http.ResponseWriter
-func (this JsonRsp)Send(w http.ResponseWriter, data interface{}) (http.ResponseWriter, error){
-    w.Header().Set("Content-Type", MimeJson)
-    content, err := json.Marshal(data)
-    if err != nil{
-        return w, ErrWriteFailed
-    }
+// this func implements the rspWriter func Send.
+// this Send a Json data to the client.
+func (this JSON) send(w http.ResponseWriter, data map[string]interface{}) (http.ResponseWriter, error) {
+	w.Header().Set("Content-Type", MimeJson)
+	content, err := json.Marshal(data)
+	if err != nil {
+		return w, ErrWriteFailed
+	}
 
-    _, err = w.Write(content)
-    if err != nil{
-        return w, ErrWriteFailed
-    }
+	_, err = w.Write(content)
+	if err != nil {
+		return w, ErrWriteFailed
+	}
 
-    return w, nil
+	return w, nil
 }
 
-// when you want to return a success msg to the http client, you can use this func.
-// this func use the default errCode string 0, if you want change the default value,
-// your must to set the package variable of SuccessCode to a new value,
-// you can do it when you start your application, once you do that, it will always affected.
-// @param: w http.ResponseWriter, all the data will use the writer write into the response
-// @param: data interface, this is the response content
-// @return： w http.ResponseWriter
-func (this JsonRsp)Success(w http.ResponseWriter, data interface{}) (http.ResponseWriter, error){
-    packedData := DefaultPadding(SuccessCode, data)
+// this implements the rspWriter func Success.
+// this Send a Success response to the client with the default success Json data format or
+// you set the default success Json data format.
+func (this JSON) Success(w http.ResponseWriter) (http.ResponseWriter, error) {
+	packedData := DefaultPadding(SuccessRet, this.Data)
 
-    return this.Send(w, packedData)
+	return this.send(w, packedData)
 }
 
-// when you want to return a failed msg to the http client, you can use this func.
-// you can define your errCode in your application, when you use this func to send a failed response,
-// you can assign which errCode you wish to return.
-// @param: w http.ResponseWriter, all the data will use the writer write into the response
-// @param: data interface, this is the response content
-// @return： w http.ResponseWriter
-func (this JsonRsp)Failed(w http.ResponseWriter, errCode string, data interface{}) (http.ResponseWriter, error) {
-    packedData := DefaultPadding(errCode, data)
+// this implements the rspWriter func Failed.
+// this func send a json data to the client with the errCode.
+func (this JSON) Failed(w http.ResponseWriter) (http.ResponseWriter, error) {
+	packedData := DefaultPadding(this.Rc, this.Data)
 
-    return this.Send(w, packedData)
+	return this.send(w, packedData)
 }
