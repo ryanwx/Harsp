@@ -69,7 +69,17 @@ All API data is added with errCode and the corresponding message to indicate the
     ```
     This will return:
     
-    ![image](http://pvyocpsk6.bkt.clouddn.com/Harsp_xml_example.PNG)
+    ```
+    <doc>
+        <code>0</code>
+        <data>
+            <a>b</a>
+            <list>aa</list>
+            <list>bb</list>
+        </data>
+        <msg>Success</msg>
+    </doc>
+    ```
     
     Failed:
     ```
@@ -77,7 +87,12 @@ All API data is added with errCode and the corresponding message to indicate the
     ```
     This will return:
     
-    ![image](http://pvyocpsk6.bkt.clouddn.com/Harsp_xml_failed_example.PNG)
+    ```
+    <doc>
+        <code>10002</code>
+        <msg>err example</msg>
+    </doc>
+    ```
     
     In the xml conversion, the root tag is defined as doc. If it is a list structure, 
     the tag is defined as named tag, and the map is tagged by key.
