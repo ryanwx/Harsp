@@ -196,6 +196,6 @@ License
 --
 Harsp is under the MIT license. See the LICENSE file for details.
 
-Thinks
+Thanks
 --
 * xml transport open resource: [mxj](https://github.com/clbanning/mxj)
