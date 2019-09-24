@@ -1,4 +1,4 @@
-module rsp
+module github.com/ryanwx/Harsp
 
 go 1.12
 
