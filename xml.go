@@ -1,7 +1,7 @@
 package harsp
 
 import (
-	"github.com/ryanwx/mxj"
+	"github.com/clbanning/mxj"
 	"net/http"
 )
 
